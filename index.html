@@ -15,24 +15,17 @@
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 
     <script type="text/babel">
-      const { useState, useEffect } = React;
-
-      const defaultCoords = {
+      const locations = {
         bride: { lat: 31.778, lng: 35.235 },
         groom: { lat: 32.085, lng: 34.781 },
-        church: { lat: 31.771959, lng: 35.217018 }
+        church: { lat: 31.771959, lng: 35.217018 },
+        final: { lat: 31.765, lng: 35.22 },
+        restaurant: { lat: 32.08, lng: 34.78 }
       };
 
       function getParam(name){
         const params = new URLSearchParams(window.location.search);
         return params.get(name);
-      }
-
-      function parseCoords(prefix){
-        const lat = parseFloat(getParam(prefix + '_lat'));
-        const lng = parseFloat(getParam(prefix + '_lng'));
-        if(!isNaN(lat) && !isNaN(lng)) return { lat, lng };
-        return defaultCoords[prefix];
       }
 
       function wazeUrl({lat,lng}){ return `https://waze.com/ul?ll=${lat},${lng}&navigate=yes`; }
@@ -42,7 +35,6 @@
         return (
           <div className="card">
             <h3>{title}</h3>
-            <p className="coords">{coords.lat.toFixed(6)}, {coords.lng.toFixed(6)}</p>
             <div className="buttons">
               <a className="btn waze" href={wazeUrl(coords)} target="_blank" rel="noopener">افتح في واز</a>
               <a className="btn maps" href={googleUrl(coords)} target="_blank" rel="noopener">افتح في الخرائط</a>
@@ -52,16 +44,22 @@
       }
 
       function App(){
-        const [inviteImg, setInviteImg] = useState(null);
+        const brideParam = getParam('bride') === 'true';
+        const groomParam = getParam('groom') === 'true';
 
-        useEffect(()=>{
-          const img = getParam('invite_img');
-          if(img) setInviteImg(img);
-        }, []);
+        const locationList = [
+          { title: "منزل عائلة العريس", coords: locations.groom },
+          { title: "الكنيسة (مكان الزواج)", coords: locations.church },
+          { title: "قاعة الرويال", coords: locations.final }
+        ];
 
-        const bride = parseCoords('bride');
-        const groom = parseCoords('groom');
-        const church = parseCoords('church');
+        if (brideParam) {
+          locationList.unshift({ title: "منزل عائلة العروس", coords: locations.bride });
+        }
+
+        if (groomParam) {
+          locationList.push({ title: "مطعم ذهب", coords: locations.restaurant });
+        }
 
         return (
           <div className="container">
@@ -72,22 +70,16 @@
 
             <section className="invite">
               <h2>صورة الدعوة</h2>
-              {inviteImg ? (
-                <img src={inviteImg} alt="صورة الدعوة" />
-              ) : (
-                <div className="placeholder">صورة الدعوة مؤقتاً</div>
-              )}
+              <img src="invite1.jpg" alt="صورة الدعوة العامة" />
+              {groomParam && <img src="invite2.jpg" alt="صورة الدعوة لحفلة العريس" />}
             </section>
 
             <section className="locations">
-              <LocationCard title="منزل عائلة العروس" coords={bride} />
-              <LocationCard title="منزل عائلة العريس" coords={groom} />
-              <LocationCard title="الكنيسة (مكان الزواج)" coords={church} />
+              {locationList.map((loc, i) => <LocationCard key={i} title={loc.title} coords={loc.coords} />)}
             </section>
 
             <footer>
-              <p className="note">لتغيير الأماكن، أضف معلمات الاستعلام إلى رابط الصفحة: <strong>bride_lat, bride_lng, groom_lat, groom_lng, church_lat, church_lng</strong></p>
-              <p className="example">مثال: <a href="?bride_lat=31.778&bride_lng=35.235&groom_lat=32.085&groom_lng=34.781&church_lat=31.771959&church_lng=35.217018">اضغط هنا</a></p>
+              <p className="note">لعرض موقع العروس، أضف ?bride=true إلى الرابط. لحفلة العريس، أضف ?groom=true</p>
             </footer>
           </div>
         );
