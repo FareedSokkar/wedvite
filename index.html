@@ -18,11 +18,11 @@
       const { useState, useEffect } = React;
 
       const locations = {
-        bride: { lat: 31.778, lng: 35.235 },
-        groom: { lat: 32.085, lng: 34.781 },
-        church: { lat: 31.771959, lng: 35.217018 },
-        final: { lat: 31.765, lng: 35.22 },
-        restaurant: { lat: 32.08, lng: 34.78 }
+        bride: { lat: 32.72994031076563, lng: 35.33150776787783 },
+        groom: { lat: 32.860545879128274, lng: 35.36518616681326 },
+        church: { lat: 32.86251383947627, lng: 35.36480494931609 },
+        final: { lat: 32.87102701117922, lng: 35.31001177592231 },
+        restaurant: { lat: 32.85646685260385, lng: 35.326665956262424 }
       };
 
       function getParam(name){
@@ -79,23 +79,23 @@
         const groomParam = getParam('groom') === 'true';
 
         const locationList = [
-          { title: "منزل عائلة العريس", coords: locations.groom, date: "17.04.2026", time: "الساعة 11:00 صباحاً" },
-          { title: "الكنيسة (مكان الزواج)", coords: locations.church, date: "17.04.2026", time: "الساعة 12:00 ظهراً" },
-          { title: "قاعة الرويال", coords: locations.final, date: "17.04.2026", time: "الساعة 6:00 مساءً" }
+          { title: "منزل عائلة العريس", coords: locations.groom, date: "14-17.04.2026", time: "الساعة 10:00 صباحاً" },
+          { title: "كنيسة مار يوحنا (كليل)", coords: locations.church, date: "17.04.2026", time: "الساعة 17:00 ظهراً" },
+          { title: "قاعة الرويال", coords: locations.final, date: "17.04.2026", time: "الساعة 20:00 مساءً" }
         ];
 
         if (brideParam) {
-          locationList.unshift({ title: "منزل عائلة العروس", coords: locations.bride, date: "17.04.2026", time: "الساعة 10:00 صباحاً" });
+          locationList.unshift({ title: "منزل عائلة العروس (طلعة)", coords: locations.bride, date: "17.04.2026", time: "الساعة 15:00 ظهراً"  });
         }
 
         if (groomParam) {
-          locationList.push({ title: "مطعم ذهب", coords: locations.restaurant, date: "17.04.2026", time: "الساعة 8:00 مساءً" });
+          locationList.push({ title: "مطعم ذهب (زيانة)", coords: locations.restaurant, date: "15.04.2026", time: "الساعة 20:00 مساءً" });
         }
 
         return (
           <div className="container">
             <header>
-              <h1>دعوة زفاف نور وروان</h1>
+              <h1>زفاف نور وروان</h1>
               <Countdown />
               <p className="subtitle">مرحباً — تفاصيل الأماكن أدناه. اضغط لفتح التطبيق المفضل على هاتفك.</p>
             </header>
