@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>دعوة زفاف</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <!-- React + Babel (for simple GH Pages deployment) -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+    <script type="text/babel">
+      const { useState, useEffect } = React;
+
+      const defaultCoords = {
+        bride: { lat: 31.778, lng: 35.235 },
+        groom: { lat: 32.085, lng: 34.781 },
+        church: { lat: 31.771959, lng: 35.217018 }
+      };
+
+      function getParam(name){
+        const params = new URLSearchParams(window.location.search);
+        return params.get(name);
+      }
+
+      function parseCoords(prefix){
+        const lat = parseFloat(getParam(prefix + '_lat'));
+        const lng = parseFloat(getParam(prefix + '_lng'));
+        if(!isNaN(lat) && !isNaN(lng)) return { lat, lng };
+        return defaultCoords[prefix];
+      }
+
+      function wazeUrl({lat,lng}){ return `https://waze.com/ul?ll=${lat},${lng}&navigate=yes`; }
+      function googleUrl({lat,lng}){ return `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`; }
+
+      function LocationCard({title, coords}){
+        return (
+          <div className="card">
+            <h3>{title}</h3>
+            <p className="coords">{coords.lat.toFixed(6)}, {coords.lng.toFixed(6)}</p>
+            <div className="buttons">
+              <a className="btn waze" href={wazeUrl(coords)} target="_blank" rel="noopener">افتح في واز</a>
+              <a className="btn maps" href={googleUrl(coords)} target="_blank" rel="noopener">افتح في الخرائط</a>
+            </div>
+          </div>
+        );
+      }
+
+      function App(){
+        const [inviteImg, setInviteImg] = useState(null);
+
+        useEffect(()=>{
+          const img = getParam('invite_img');
+          if(img) setInviteImg(img);
+        }, []);
+
+        const bride = parseCoords('bride');
+        const groom = parseCoords('groom');
+        const church = parseCoords('church');
+
+        return (
+          <div className="container">
+            <header>
+              <h1>دعوة زفاف</h1>
+              <p className="subtitle">مرحباً — تفاصيل الأماكن أدناه. اضغط لفتح التطبيق المفضل على هاتفك.</p>
+            </header>
+
+            <section className="invite">
+              <h2>صورة الدعوة</h2>
+              {inviteImg ? (
+                <img src={inviteImg} alt="صورة الدعوة" />
+              ) : (
+                <div className="placeholder">صورة الدعوة مؤقتاً</div>
+              )}
+            </section>
+
+            <section className="locations">
+              <LocationCard title="منزل عائلة العروس" coords={bride} />
+              <LocationCard title="منزل عائلة العريس" coords={groom} />
+              <LocationCard title="الكنيسة (مكان الزواج)" coords={church} />
+            </section>
+
+            <footer>
+              <p className="note">لتغيير الأماكن، أضف معلمات الاستعلام إلى رابط الصفحة: <strong>bride_lat, bride_lng, groom_lat, groom_lng, church_lat, church_lng</strong></p>
+              <p className="example">مثال: <a href="?bride_lat=31.778&bride_lng=35.235&groom_lat=32.085&groom_lng=34.781&church_lat=31.771959&church_lng=35.217018">اضغط هنا</a></p>
+            </footer>
+          </div>
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+  </body>
+</html>
