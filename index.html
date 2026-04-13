@@ -77,13 +77,16 @@
       function App(){
         const brideParam = getParam('bride') === 'true';
         const groomParam = getParam('groom') === 'true';
+        const homeParam = getParam('home') === 'true';
 
         const locationList = [
-          { title: "منزل عائلة العريس", coords: locations.groom, date: "14-17.04.2026", time: "الساعة 10:00 صباحاً" },
           { title: "كنيسة مار يوحنا (كليل)", coords: locations.church, date: "17.04.2026", time: "الساعة 17:00 ظهراً" },
           { title: "قاعة الرويال", coords: locations.final, date: "17.04.2026", time: "الساعة 20:00 مساءً" }
         ];
 
+        if (homeParam) {
+          locationList.unshift({ title: "منزل عائلة العريس", coords: locations.groom, date: "14-17.04.2026", time: "الساعة 10:00 صباحاً" });
+        }
         if (brideParam) {
           locationList.unshift({ title: "منزل عائلة العروس (طلعة)", coords: locations.bride, date: "17.04.2026", time: "الساعة 15:00 ظهراً"  });
         }
